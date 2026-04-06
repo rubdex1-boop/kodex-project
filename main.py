@@ -21,15 +21,43 @@ def get_eth_price() -> float:
     return get_price(ETH_URL)
 
 
+def format_change(current: float, previous: float | None) -> str:
+    if previous is None:
+        return "brak poprzedniego odczytu"
+
+    diff = current - previous
+    pct = (diff / previous) * 100 if previous != 0 else 0
+
+    if diff > 0:
+        direction = "UP"
+    elif diff < 0:
+        direction = "DOWN"
+    else:
+        direction = "FLAT"
+
+    return f"{direction} | {diff:+.2f} ({pct:+.4f}%)"
+
+
 def main() -> None:
     print("SYSTEM START...")
+
+    previous_btc = None
+    previous_eth = None
 
     while True:
         try:
             btc = get_btc_price()
             eth = get_eth_price()
 
-            print(f"BTC: {btc:.2f} | ETH: {eth:.2f}")
+            btc_change = format_change(btc, previous_btc)
+            eth_change = format_change(eth, previous_eth)
+
+            print("=" * 60)
+            print(f"BTC: {btc:.2f} | {btc_change}")
+            print(f"ETH: {eth:.2f} | {eth_change}")
+
+            previous_btc = btc
+            previous_eth = eth
 
         except requests.RequestException as e:
             print(f"NETWORK ERROR: {e}")
