@@ -9,7 +9,7 @@ ALERT_THRESHOLD_PCT = 0.10  # alert przy zmianie >= 0.10% względem poprzedniego
 
 
 def get_price(url: str) -> float:
-    response = requests.get(url, timeout=10)
+    response = requests.get(url, timeout=10)A
     response.raise_for_status()
     data = response.json()
     return float(data["price"])
